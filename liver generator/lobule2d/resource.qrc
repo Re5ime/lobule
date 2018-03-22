@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/logo/nd125.png</file> 
+        <file>images/logo/nd250.png</file>
+        <file>images/logo/nd48.png</file>
+        <file>images/logo/nd500.png</file>
+        <file>images/branch-closed.png</file>
+        <file>images/branch-open.png</file>
+        <file>images/downarrow.png</file>
+        <file>images/uparrow.png</file>
+        <file>template/info.xml</file>
+        <file>images/commentCancel.png</file>
+        <file>images/commentSave.png</file>
+        <file>images/settings.png</file>
+        <file>images/close.png</file>
+        <file>images/projectAdd.png</file>
+        <file>images/projectClon.png</file>
+        <file>images/projectDel.png</file>
+        <file>images/projectNew.png</file>
+        <file>images/meshGen.png</file>
+        <file>images/add.svg</file>
+        <file>images/apply.svg</file>
+        <file>images/remove.svg</file>
+        <file>images/geoCancel.png</file>
+        <file>images/geoSave.png</file>
+        <file>images/groupAdd.png</file>
+        <file>images/groupDelete.png</file>
+        <file>images/groupView.png</file>
+        <file>styles/dark.qss</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,6 @@
+gmsh -2 $2
+for p in $(seq 1 $1)
+do
+	gmsh -refine $3
+done
+dolfin-convert $3 $4

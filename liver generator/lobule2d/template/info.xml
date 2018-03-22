@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<comment>
+		Комментарий к проекту
+	</comment>
+        <lobule size="20" radius="6" count="163" />
+        <mesh count="1" list="6" />
+        <parameters femOrder="1" />
+        <groups>
+            <group index="0" name="phantom" color="#323232">
+                    <coefficients>
+                            <coefficient name="k1"  value="0" />
+                            <coefficient name="k2"  value="0" />
+                            <coefficient name="c1" value="0" />
+                            <coefficient name="c2" value="0" />
+                            <coefficient name="alpha" value="0" />
+                    </coefficients>
+                    <hexes>
+                    </hexes>
+            </group>
+            <group index="1" name="Тип 1" color="#00AA00">
+                    <coefficients>
+                            <coefficient name="k1"  value="1.3" />
+                            <coefficient name="k2"  value="0.4" />
+                            <coefficient name="c1" value="0.1" />
+                            <coefficient name="c2" value="0.1" />
+                            <coefficient name="alpha" value="0.3" />
+                    </coefficients>
+                    <hexes>
+                    </hexes>
+            </group>
+        </groups>
+</project>
