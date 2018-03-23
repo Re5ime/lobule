@@ -74,6 +74,7 @@ private slots:
 
 private:
     QString createGmshHex(double x, double y, int i);
+    QString createGmshHexCircle(double x, double y, int i);
     void exportGeometry();
     void exportCoefficients();
     void deleteFiles();

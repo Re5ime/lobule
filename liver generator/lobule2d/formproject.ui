@@ -53,8 +53,7 @@
          <string>Создать новый проект</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(50, 50, 50);
-text-align: left;</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>Создать</string>
@@ -86,8 +85,7 @@ text-align: left;</string>
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Добавить существующий проект&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(50, 50, 50);
-text-align: left;</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>Добавить</string>
@@ -119,8 +117,7 @@ text-align: left;</string>
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Клонировать выделенный проект&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(50, 50, 50);
-text-align: left;</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>Клонировать</string>
@@ -152,8 +149,7 @@ text-align: left;</string>
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Удалить выделенный проект и его файлы&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(50, 50, 50);
-text-align: left;</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>Удалить</string>
@@ -290,7 +286,7 @@ text-align: left;</string>
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background-color: rgb(40, 40, 40);</string>
+            <string notr="true"/>
            </property>
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
@@ -404,7 +400,7 @@ text-align: left;</string>
                   </size>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">background-color: rgb(40, 40, 40);</string>
+                  <string notr="true"/>
                  </property>
                  <property name="frameShape">
                   <enum>QFrame::NoFrame</enum>

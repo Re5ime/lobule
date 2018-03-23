@@ -65,65 +65,26 @@ QWidget *FormGeo::tools() {
     return ui->widget;
 }
 
-void FormGeo::exportGeometry() {
-    R1 = p->hexSize * 0.10;
-    R2 = 2.0 * R1 / 3.0;
-
-    QString fileName = p->path + QDir::separator() + "domain.geo";
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly)) {
-        QMessageBox::critical(this, tr("Can't write file"), tr("File can't be opened for writing") + fileName);
-        return;
-    } else {
-        QTextStream out(&file);
-        out << "p1 = " << p->hexSize / 4.0 << ";" << endl;
-        int k = 1;
-        double ratio = p->hexSize / 50.0;
-        for (int i = 0; i < hexes.size(); i++ ){
-            if (hexes[i]->group->index > 0){                
-                QString s = createGmshHex(ratio * hexes[i]->x, -ratio * hexes[i]->y, k);
-                out << s;
-                out << "Physical Surface(" << hexes[i]->index + 1 << ")={" << k + 42 << "};\n" << endl;
-                k += 43;
-            }
-        }
-
-        out << "Coherence;" << endl;
-        qDebug() << "Done importing:" << file.fileName();
-        out.flush();
-        file.close();
-    }    
-
-    QString fileName2 = p->path + QDir::separator() + "mesh.geo";
-    QFile file2(fileName2);
-    if (!file2.open(QIODevice::WriteOnly)) {
-        QMessageBox::critical(this, tr("Can't write file"), tr("File can't be opened for writing") + fileName2);
-        return;
-    } else {
-        QTextStream out(&file2);
-        out << "p1 = " << p->hexSize / 4.0 << ";" << endl;
-        int k = 1;
-        double ratio = p->hexSize / 50.0;                
-        QString s1;
-        for (int i = 1; i < p->groups.size(); i++){
-            s1 = "";
-            for (int j = 0; j < p->groups[i]->indexes.size(); j++){
-                QString s = createGmshHex(ratio * hexes[p->groups[i]->indexes[j]]->x, -ratio * hexes[p->groups[i]->indexes[j]]->y, k);
-                out << s << endl;
-                k += 8;
-                s1 += QString::number(k - 1) + ",";
-            }
-            s1.resize(s1.size() - 1);
-            out << "Physical Surface(" << i << ")={" << s1 << "};\n" << endl;
-        }
-        out << "Coherence;" << endl;
-        qDebug() << "Done importing:" << file2.fileName();
-        out.flush();
-        file2.close();
-    }
+QString FormGeo::createGmshHex(double x, double y, int i) {
+    QString s = "";
+    s = s + "Point(" + QString::number(i) + ")={" + QString::number(x) + "," + QString::number(y + p->hexSize / sqrt(3.0)) + ",0,p1};\n";
+    s = s + "Point(" + QString::number(i + 1) + ")={" + QString::number(x + p->hexSize / 2) + "," + QString::number(y + p->hexSize / sqrt(3.0) / 2.0) + ",0,p1};\n";
+    s = s + "Point(" + QString::number(i + 2) + ")={" + QString::number(x + p->hexSize / 2) + "," + QString::number(y - p->hexSize / sqrt(3.0) / 2.0) + ",0,p1};\n";
+    s = s + "Point(" + QString::number(i + 3) + ")={" + QString::number(x) + "," + QString::number(y - p->hexSize / sqrt(3.0)) + ",0,p1};\n";
+    s = s + "Point(" + QString::number(i + 4) + ")={" + QString::number(x - p->hexSize / 2) + "," + QString::number(y - p->hexSize / sqrt(3.0) / 2.0) + ",0,p1};\n";
+    s = s + "Point(" + QString::number(i + 5) + ")={" + QString::number(x - p->hexSize / 2) + "," + QString::number(y + p->hexSize / sqrt(3.0) / 2.0) + ",0,p1};\n";
+    s = s + "Line(" + QString::number(i) + ")={" + QString::number(i) + "," + QString::number(i + 1) + "};\n";
+    s = s + "Line(" + QString::number(i + 1) + ")={" + QString::number(i + 1) + "," + QString::number(i + 2) + "};\n";
+    s = s + "Line(" + QString::number(i + 2) + ")={" + QString::number(i + 2) + "," + QString::number(i + 3) + "};\n";
+    s = s + "Line(" + QString::number(i + 3) + ")={" + QString::number(i + 3) + "," + QString::number(i + 4) + "};\n";
+    s = s + "Line(" + QString::number(i + 4) + ")={" + QString::number(i + 4) + "," + QString::number(i + 5) + "};\n";
+    s = s + "Line(" + QString::number(i + 5) + ")={" + QString::number(i + 5) + "," + QString::number(i) + "};\n";
+    s = s + "Line Loop(" + QString::number(i + 6) + ")={" + QString::number(i) + "," + QString::number(i + 1) + "," + QString::number(i + 2) + "," + QString::number(i + 3) + "," + QString::number(i + 4) + "," + QString::number(i + 5) + "};\n";
+    s = s + "Plane Surface(" + QString::number(i + 7) + ")={" + QString::number(i + 6) + "};\n";
+    return s;
 }
 
-QString FormGeo::createGmshHex(double x, double y, int i) {
+QString FormGeo::createGmshHexCircle(double x, double y, int i) {
     QString s = "";
     s = s + "Point(" + QString::number(i) + ")={" + QString::number(x) + "," + QString::number(y + p->hexSize / sqrt(3.0)) + ",0,p1};\n";
     s = s + "Point(" + QString::number(i + 1) + ")={" + QString::number(x + p->hexSize / 2) + "," + QString::number(y + p->hexSize / sqrt(3.0) / 2.0) + ",0,p1};\n";
@@ -182,8 +143,48 @@ QString FormGeo::createGmshHex(double x, double y, int i) {
     s = s + "Line Loop(" + QString::number(i + 39) + ")={" + QString::number(i + 29) + "," + QString::number(i + 30) + "," + QString::number(i + 31) + "," + QString::number(i + 32) + "};\n";
     s = s + "Line Loop(" + QString::number(i + 40) + ")={" + QString::number(i + 33) + "," + QString::number(i + 23) + "," + QString::number(i + 34) + "," + QString::number(i + 24) + "," + QString::number(i + 35) + "," + QString::number(i + 25) + "," + QString::number(i + 36) + "," + QString::number(i + 26) + "," + QString::number(i + 37) + "," + QString::number(i + 27) + "," + QString::number(i + 38) + "," + QString::number(i + 28) + "};\n";
 
-    s = s + "Plane Surface(" + QString::number(i + 42) + ")={" + QString::number(i + 40) + "," + QString::number(i + 39) + "};\n";
+    s = s + "Plane Surface(" + QString::number(i + 41) + ")={" + QString::number(i + 40) + "," + QString::number(i + 39) + "};\n";
     return s;
+}
+
+void FormGeo::exportGeometry() {
+    R1 = p->hexSize * 0.10;
+    R2 = 2.0 * R1 / 3.0;
+
+    QString fileName = p->path + QDir::separator() + "domain.geo";
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::critical(this, tr("Can't write file"), tr("File can't be opened for writing") + fileName);
+        return;
+    } else {
+        QTextStream out(&file);
+        out << "p1 = " << p->hexSize / 4.0 << ";" << endl;
+        int k = 1;
+        double ratio = p->hexSize / 50.0;
+        for (int i = 0; i < hexes.size(); i++) {
+            if (hexes[i]->group->index > 0) {
+                QString s = createGmshHexCircle(ratio * hexes[i]->x, -ratio * hexes[i]->y, k);
+                s += "\n";
+                out << s;
+                k += 42;
+            }
+        }
+        out << "Coherence;" << endl;
+
+        for (int i = 1; i < p->groups.size(); i++) {
+            QString s1 = "";
+            foreach (int hexIndex, p->groups[i]->indexes) {
+                s1 += QString::number(42 * hexIndex + 42) + ",";
+            }
+            s1.resize(s1.size() - 1);
+            out << "Physical Surface(" << i << ")={" << s1 << "};\n" << endl;
+        }
+
+        qDebug() << "Done importing:" << file.fileName();
+        out.flush();
+        file.close();
+
+    }
 }
 
 void FormGeo::exportCoefficients() {
@@ -200,51 +201,37 @@ void FormGeo::exportCoefficients() {
         out << "  <parameters name=\"coefficients\">" << endl;
         //K1
         out << "    <parameters name=\"K1\">" << endl;
-        for (int i = 0; i < hexes.size(); i++){
-            if (hexes[i]->group->index > 0) {
-                out << "      <parameter key=\"" << hexes[i]->index + 1 << "\" type=\"double\" value=\"";
-                out << hexes[i]->group->K1 << "\" />" << endl;
-            }
+        for (int i = 1; i < p->groups.size(); i++) {
+            out << "      <parameter key=\"" << i << "\" type=\"double\" value=\"";
+            out << p->groups[i]->K1 << "\" />" << endl;
         }
         out << "    </parameters>" << endl;
         //K2
         out << "    <parameters name=\"K2\">" << endl;
-        for (int i = 0; i < hexes.size(); i++)
-        {
-            if (hexes[i]->group->index > 0) {
-                out << "      <parameter key=\"" << hexes[i]->index + 1 << "\" type=\"double\" value=\"";
-                out << hexes[i]->group->K2 << "\" />" << endl;
-            }
+        for (int i = 1; i < p->groups.size(); i++) {
+            out << "      <parameter key=\"" << i << "\" type=\"double\" value=\"";
+            out << p->groups[i]->K2 << "\" />" << endl;
         }
         out << "    </parameters>" << endl;
         //C1
         out << "    <parameters name=\"C1\">" << endl;
-        for (int i = 0; i < hexes.size(); i++)
-        {
-            if (hexes[i]->group->index > 0) {
-                out << "      <parameter key=\"" << hexes[i]->index + 1 << "\" type=\"double\" value=\"";
-                out << hexes[i]->group->C1 << "\" />" << endl;
-            }
+        for (int i = 1; i < p->groups.size(); i++) {
+            out << "      <parameter key=\"" << i << "\" type=\"double\" value=\"";
+            out << p->groups[i]->C1 << "\" />" << endl;
         }
         out << "    </parameters>" << endl;
         //C2
         out << "    <parameters name=\"C2\">" << endl;
-        for (int i = 0; i < hexes.size(); i++)
-        {
-            if (hexes[i]->group->index > 0) {
-                out << "      <parameter key=\"" << hexes[i]->index + 1 << "\" type=\"double\" value=\"";
-                out << hexes[i]->group->C2 << "\" />" << endl;
-            }
+        for (int i = 1; i < p->groups.size(); i++) {
+            out << "      <parameter key=\"" << i << "\" type=\"double\" value=\"";
+            out << p->groups[i]->C2 << "\" />" << endl;
         }
         out << "    </parameters>" << endl;
         //Alpha
         out << "    <parameters name=\"Alpha\">" << endl;
-        for (int i = 0; i < hexes.size(); i++)
-        {
-            if (hexes[i]->group->index > 0) {
-                out << "      <parameter key=\"" << hexes[i]->index + 1 << "\" type=\"double\" value=\"";
-                out << hexes[i]->group->Alpha << "\" />" << endl;
-            }
+        for (int i = 1; i < p->groups.size(); i++) {
+            out << "      <parameter key=\"" << i << "\" type=\"double\" value=\"";
+            out << p->groups[i]->Alpha << "\" />" << endl;
         }
         out << "    </parameters>" << endl;
         out << "  </parameters>" << endl;
@@ -459,7 +446,7 @@ void Hex::draw(QGraphicsScene *scene, QBrush brush) const {
     QPen pen;
     if (isSelected){
         pen.setWidthF(2);
-        pen.setColor(Qt::white);
+        pen.setColor(Qt::black);
     }
     else {
         pen.setWidthF(1);
@@ -615,7 +602,7 @@ void FormGeo::on_viewButton_clicked() {
 void FormGeo::on_saveButton_clicked() {
     exportGeometry();
     exportCoefficients();
-    deleteFiles();
+//    deleteFiles();
     p->lobuleCount = hexes.size() - p->groups[0]->indexes.size();
     p->femOrder = 0;
     p->save();
@@ -623,38 +610,37 @@ void FormGeo::on_saveButton_clicked() {
     emit updateMainTools();
 }
 
-void FormGeo::deleteFiles() {
-    QString fileName;
-    if (p->isMeshExist()){
-        for (int i = 0; i < 5; i++) {
-            if (p->meshList[i] > 0) {
-                QString ms = QString::number(p->meshList[i]);
-                fileName = p->path + QDir::separator() + "domain" + ms + ".msh";
-                QFile::remove(fileName);
-                fileName = p->path + QDir::separator() + "domain" + ms + ".xml";
-                QFile::remove(fileName);
-                fileName = p->path + QDir::separator() + "domain" + ms + "_physical_region.xml";
-                QFile::remove(fileName);
-                fileName = p->path + QDir::separator() + "mesh" + ms + ".msh";
-                QFile::remove(fileName);
-                fileName = p->path + QDir::separator() + "mesh" + ms + ".xml";
-                QFile::remove(fileName);
-                fileName = p->path + QDir::separator() + "mesh" + ms + "_physical_region.xml";
-                QFile::remove(fileName);
-                fileName = p->path + QDir::separator() + "mesh" + ms + "_physical_region.xml.pvd";
-                QFile::remove(fileName);
-                fileName = p->path + QDir::separator() + "mesh" + ms + "_physical_region.xml000000.vtu";
-                QFile::remove(fileName);
-            }
-        }
-    }
+//void FormGeo::deleteFiles() {
+//    QString fileName;
+//    if (p->isMeshExist()){
+//        for (int i = 0; i < 5; i++) {
+//            if (p->meshList[i] > 0) {
+//                QString ms = QString::number(p->meshList[i]);
+//                fileName = p->path + QDir::separator() + "domain" + ms + ".msh";
+//                QFile::remove(fileName);
+//                fileName = p->path + QDir::separator() + "domain" + ms + ".xml";
+//                QFile::remove(fileName);
+//                fileName = p->path + QDir::separator() + "domain" + ms + "_physical_region.xml";
+//                QFile::remove(fileName);
+//                fileName = p->path + QDir::separator() + "mesh" + ms + ".msh";
+//                QFile::remove(fileName);
+//                fileName = p->path + QDir::separator() + "mesh" + ms + ".xml";
+//                QFile::remove(fileName);
+//                fileName = p->path + QDir::separator() + "mesh" + ms + "_physical_region.xml";
+//                QFile::remove(fileName);
+//                fileName = p->path + QDir::separator() + "mesh" + ms + "_physical_region.xml.pvd";
+//                QFile::remove(fileName);
+//                fileName = p->path + QDir::separator() + "mesh" + ms + "_physical_region.xml000000.vtu";
+//                QFile::remove(fileName);
+//            }
+//        }
+//    }
 
-    for (int i = 0; i < 5; i++) {
-        p->meshList[i] = 0;
-    }
-    p->save();
-
-}
+//    for (int i = 0; i < 5; i++) {
+//        p->meshList[i] = 0;
+//    }
+//    p->save();
+//}
 
 Group *FormGeo::current() {
     int row = ui->groupsTable->currentRow();

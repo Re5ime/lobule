@@ -59,8 +59,7 @@
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(50, 50, 50);
-text-align: left;</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>Сохранить</string>
@@ -92,8 +91,7 @@ text-align: left;</string>
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(50, 50, 50);
-text-align: left;</string>
+         <string notr="true"/>
         </property>
         <property name="text">
          <string>Загрузить</string>
@@ -313,7 +311,7 @@ text-align: left;</string>
          <item>
           <widget class="QWidget" name="groupsTitle" native="true">
            <property name="styleSheet">
-            <string notr="true">background-color: rgb(40, 40, 40);</string>
+            <string notr="true"/>
            </property>
            <layout class="QHBoxLayout" name="groupLayout">
             <property name="spacing">
@@ -340,7 +338,7 @@ text-align: left;</string>
                </size>
               </property>
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(40, 40, 40);</string>
+               <string notr="true"/>
               </property>
               <property name="text">
                <string>Типы Гексов</string>
