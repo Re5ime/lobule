@@ -425,7 +425,7 @@
                    <number>0</number>
                   </property>
                   <item>
-                   <widget class="QLabel" name="nameLabel_2">
+                   <widget class="QLabel" name="nameComment">
                     <property name="text">
                      <string>Комментарий  </string>
                     </property>
@@ -604,7 +604,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QVBoxLayout" name="settingLayout">
         <item>
          <widget class="QLabel" name="Info">
           <property name="sizePolicy">
@@ -614,7 +614,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:xx-large; font-weight:600; color:#d1ba66;&quot;&gt;Liver Generator&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Генерация геометрии печени&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;img src=&quot;:/images/logo/nd250.png&quot;/&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;hr/&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Программа LG-2D&lt;/span&gt;&lt;br/&gt;Версия: 1.0&lt;br/&gt;Дата выпуска: 21.03.2018&lt;br/&gt;© MMR Lab 2018&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-size:xx-large; font-weight:600; color:#d1ba66;&quot;&gt;Liver Generator&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Генерация геометрии печени&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;&lt;img src=&quot;:/images/logo/nd250.png&quot;/&gt;&lt;/p&gt;&lt;p align=&quot;right&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;hr/&gt;&lt;p align=&quot;right&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Программа LG-2D&lt;/span&gt;&lt;br/&gt;Версия: 1.0.1&lt;br/&gt;Дата выпуска: 26.03.2018&lt;br/&gt;© MMR Lab 2018&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>

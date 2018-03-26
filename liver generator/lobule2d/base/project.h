@@ -10,7 +10,6 @@ public:
     int index;
     QString name;
     QColor color;
-//    bool isCenter = false;
 
     QList<int> indexes;
 
@@ -37,18 +36,10 @@ public:
 
     QList<Group*> groups;
 
-    int meshList[5];    
-    int count;
-    QString list;
-
     int femOrder;
 
     void save();
     void read();
-    void fillMeshlist();
-
-    bool isGeoExist();
-    bool isMeshExist();
 
 private:
     QDomDocument *xml;

@@ -341,12 +341,15 @@
                <string notr="true"/>
               </property>
               <property name="text">
-               <string>Типы Гексов</string>
+               <string>Типы лобул</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="addButton">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -379,7 +382,7 @@
                 <normaloff>:/images/groupAdd.png</normaloff>:/images/groupAdd.png</iconset>
               </property>
               <property name="checkable">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>

@@ -37,12 +37,6 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->tools->widget(i)->setMaximumHeight(50);
     }
 
-    messageLabel = new QLabel();
-    statusBar()->addPermanentWidget(messageLabel, 0);
-    progress = new QProgressBar();
-    statusBar()->addPermanentWidget(progress, 0);
-    statusBar()->showMessage(tr("Проект не выбран"));
-
     restoreGeometry(Settings::A("mainwindow.g", saveGeometry()));
     restoreState(Settings::A("mainwindow.s", saveState()));
 
@@ -77,17 +71,5 @@ void MainWindow::toolClicked() {
     ui->tools->setCurrentIndex(index);
     if (index == 0) {
         projects->update();
-    }
-}
-
-void MainWindow::showMessage(QString message) {
-    messageLabel->setText(message);
-}
-
-void MainWindow::showProgress(int progressValue) {
-    if (progressValue == 0) {
-        progress->reset();
-    } else {
-        progress->setValue(progressValue);
     }
 }

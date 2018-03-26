@@ -8,11 +8,7 @@
 
 #include "project.h"
 
-Project::Project(QString path):
-    path(path) {
-    for (int i = 0; i < 5; i++) {
-        meshList[i] = 0;
-    }
+Project::Project(QString path): path(path) {
 
     QFileInfo info(path);
     name = info.baseName();
@@ -41,10 +37,6 @@ void Project::read() {
             hexSize = e.attribute("size").toDouble();
             areaRadius = e.attribute("radius").toInt();
         }
-        if (e.tagName() == "mesh") {
-            count = e.attribute("count").toInt();            
-            list = e.attribute("list");
-        }
         if (e.tagName() == "parameters") {
             femOrder = e.attribute("femOrder").toInt();
         }
@@ -60,21 +52,6 @@ void Project::read() {
     }
     if (areaRadius > 100)
         areaRadius = 100;
-}
-void Project::fillMeshlist() {
-    int meshPower;
-    QString mesh1, mesh2;
-
-    for (int i = 0; i < 5; i++){
-        meshPower = 6 * pow(4, i);
-        mesh1 = path + QDir::separator() + "domain" + QString::number(meshPower) + "_physical_region.xml";
-        mesh2 = path + QDir::separator() + "mesh" + QString::number(meshPower) + "_physical_region.xml.pvd";
-        if (QFile::exists(mesh1) && QFile::exists(mesh2)) {
-            meshList[i] = meshPower;
-        } else {
-            meshList[i] = 0;
-        }
-    }
 }
 
 Group *Project::readGroup(QDomElement g) {
@@ -108,15 +85,6 @@ Group *Project::readGroup(QDomElement g) {
 }
 
 void Project::save() {    
-    count = 0;
-    list = "";
-    for (int i = 0; i < 5; i++) {
-        if (meshList[i] > 0) {
-            list += QString::number(meshList[i]) + ",";
-            count++;
-        }
-    }
-    list.remove(list.size() - 1, 1);
 
     QDomElement root = xml->documentElement();
     xml->removeChild(root);
@@ -132,11 +100,6 @@ void Project::save() {
     e.setAttribute("count", lobuleCount);
     e.setAttribute("size", hexSize);
     e.setAttribute("radius", areaRadius);
-    root.appendChild(e);
-
-    e = xml->createElement("mesh");
-    e.setAttribute("count", count);
-    e.setAttribute("list", list);
     root.appendChild(e);
 
     e = xml->createElement("parameters");
@@ -198,18 +161,5 @@ void Project::saveGroup(QDomElement &g, int i) {
         QDomElement h = xml->createElement("hex");
         h.setAttribute("index", i);        
         hexes.appendChild(h);
-    }
-}
-
-bool Project::isGeoExist() {
-    QString geo = path + QDir::separator() + "domain.geo";
-    return QFile::exists(geo);
-}
-
-bool Project::isMeshExist() {    
-    if (count > 0) {
-        return true;
-    } else {
-        return false;
     }
 }

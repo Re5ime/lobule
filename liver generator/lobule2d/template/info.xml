@@ -4,7 +4,6 @@
 		Комментарий к проекту
 	</comment>
         <lobule size="20" radius="6" count="163" />
-        <mesh count="1" list="6" />
         <parameters femOrder="1" />
         <groups>
             <group index="0" name="phantom" color="#323232">

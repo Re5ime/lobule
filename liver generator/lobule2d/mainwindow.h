@@ -28,9 +28,6 @@ private slots:
     void toolClicked();
     void updateTools();
 
-    void showMessage(QString message);
-    void showProgress(int progressValue);
-
 private:
     Ui::MainWindow *ui;
     QList<QToolButton*> tabs;
@@ -38,8 +35,6 @@ private:
     FormProject *projects;
     QList<BaseForm*> forms;
 
-    QLabel* messageLabel;    
-    QProgressBar* progress;
 };
 
 #endif // MAINWINDOW_H

@@ -76,16 +76,3 @@ void BaseForm::cancelEval() {
     emit showMessage("");
     emit showProgess(0);
 }
-
-void BaseForm::meshList(QListWidget *listWidget, Project *p) {
-    listWidget->clear();
-    for (int i = 0; i < 5; i++) {
-        if (p->meshList[i] > 0) {
-            QListWidgetItem *item = new QListWidgetItem;
-            QString text = tr("Сетка ") + QString::number(p->meshList[i]);
-            item->setData(3, p->meshList[i]);
-            item->setText(text);
-            listWidget->addItem(item);
-        }
-    }
-}

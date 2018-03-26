@@ -150,8 +150,9 @@ QString FormGeo::createGmshHexCircle(double x, double y, int i) {
 void FormGeo::exportGeometry() {
     R1 = p->hexSize * 0.10;
     R2 = 2.0 * R1 / 3.0;
+    double ratio = p->hexSize / 50.0;
 
-    QString fileName = p->path + QDir::separator() + "domain.geo";
+    QString fileName = p->path + QDir::separator() + "domain_circle.geo";
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
         QMessageBox::critical(this, tr("Can't write file"), tr("File can't be opened for writing") + fileName);
@@ -160,7 +161,7 @@ void FormGeo::exportGeometry() {
         QTextStream out(&file);
         out << "p1 = " << p->hexSize / 4.0 << ";" << endl;
         int k = 1;
-        double ratio = p->hexSize / 50.0;
+
         for (int i = 0; i < hexes.size(); i++) {
             if (hexes[i]->group->index > 0) {
                 QString s = createGmshHexCircle(ratio * hexes[i]->x, -ratio * hexes[i]->y, k);
@@ -183,7 +184,40 @@ void FormGeo::exportGeometry() {
         qDebug() << "Done importing:" << file.fileName();
         out.flush();
         file.close();
+    }
 
+    QString fileName2 = p->path + QDir::separator() + "domain_solid.geo";
+    QFile file2(fileName2);
+    if (!file2.open(QIODevice::WriteOnly)) {
+        QMessageBox::critical(this, tr("Can't write file"), tr("File can't be opened for writing") + fileName2);
+        return;
+    } else {
+        QTextStream out(&file2);
+        out << "p1 = " << p->hexSize / 4.0 << ";" << endl;
+        int k = 1;
+
+        for (int i = 0; i < hexes.size(); i++) {
+            if (hexes[i]->group->index > 0) {
+                QString s = createGmshHex(ratio * hexes[i]->x, -ratio * hexes[i]->y, k);
+                s += "\n";
+                out << s;
+                k += 8;
+            }
+        }
+        out << "Coherence;" << endl;
+
+        for (int i = 1; i < p->groups.size(); i++) {
+            QString s1 = "";
+            foreach (int hexIndex, p->groups[i]->indexes) {
+                s1 += QString::number(8 * hexIndex + 8) + ",";
+            }
+            s1.resize(s1.size() - 1);
+            out << "Physical Surface(" << i << ")={" << s1 << "};\n" << endl;
+        }
+
+        qDebug() << "Done importing:" << file2.fileName();
+        out.flush();
+        file2.close();
     }
 }
 
@@ -312,11 +346,11 @@ void FormGeo::draw()
     foreach (const Group *group, p->groups) {
         int alpha = 255;
         if (current() != NULL && group != current()) {
-            alpha = 157;
+            alpha = 64;
         }
         foreach (int i, group->indexes) {
             if (isPart && ! hexes[i]->isOnesixth){
-                alpha = 30;
+                alpha = 32;
             }
             QColor gcolor = group->color;
             gcolor.setAlpha(alpha);
@@ -329,7 +363,7 @@ void FormGeo::draw()
         if (hex->isSelected){
             QColor gcolor = hex->group->color;
             if (isPart && ! hex->isOnesixth){
-                gcolor.setAlpha(30);
+                gcolor.setAlpha(32);
             }
             brush.setColor(gcolor);
             hex->draw(scene, brush);
@@ -461,7 +495,13 @@ void Hex::drawCircle(QGraphicsScene *scene, QBrush brush) const {
     QRectF rect(x - r1 / 2.0, y - r1 / 2.0, r1, r1);
 
     QPen pen;
-    pen.setWidthF(1);
+    if (isSelected){
+        pen.setWidthF(2);
+        pen.setColor(Qt::black);
+    }
+    else {
+        pen.setWidthF(1);
+    }
 
     //gcolor.setAlpha(alpha);
     brush.setColor(QColor(100, 100, 100));
@@ -531,8 +571,19 @@ void FormGeo::changeColor() {
 void FormGeo::on_addButton_clicked() {
     Group *group = new Group();
     group->index = p->groups.size();
-    group->name = tr("Тип ") + QString::number(group->index);
-    group->color = QColor(qrand() % 256, qrand() % 256, qrand() % 256);
+    QList<QString> types;
+    types << "green" << "red" << "blue" << "yellow" << "cyan" << "magenta";
+    QList<QColor> colors;
+    colors << QColor(0, 255, 0) << QColor(255, 0, 0) << QColor(0, 0, 255);
+    colors << QColor(255, 255, 0) << QColor(255, 0, 255) << QColor(0, 255, 255);
+
+    if (group->index < 7) {
+        group->name = types[group->index - 1];
+        group->color = colors[group->index - 1];
+    } else {
+        group->name = tr("type ") + QString::number(group->index);
+        group->color = QColor(qrand() % 256, qrand() % 256, qrand() % 256);
+    }
 
     group->K1 = ui->K1Edit->text();
     group->K2 = ui->K2Edit->text();
@@ -592,7 +643,6 @@ void FormGeo::on_viewButton_clicked() {
 
     for (int i = 0; i < hexes.size(); i++){
         hexes[i]->isSelected = false;
-//        hexes[i]->isSelectedCircle = false;
     }
 
     ui->groupsTable->clearSelection();
@@ -602,45 +652,12 @@ void FormGeo::on_viewButton_clicked() {
 void FormGeo::on_saveButton_clicked() {
     exportGeometry();
     exportCoefficients();
-//    deleteFiles();
     p->lobuleCount = hexes.size() - p->groups[0]->indexes.size();
     p->femOrder = 0;
     p->save();
 
     emit updateMainTools();
 }
-
-//void FormGeo::deleteFiles() {
-//    QString fileName;
-//    if (p->isMeshExist()){
-//        for (int i = 0; i < 5; i++) {
-//            if (p->meshList[i] > 0) {
-//                QString ms = QString::number(p->meshList[i]);
-//                fileName = p->path + QDir::separator() + "domain" + ms + ".msh";
-//                QFile::remove(fileName);
-//                fileName = p->path + QDir::separator() + "domain" + ms + ".xml";
-//                QFile::remove(fileName);
-//                fileName = p->path + QDir::separator() + "domain" + ms + "_physical_region.xml";
-//                QFile::remove(fileName);
-//                fileName = p->path + QDir::separator() + "mesh" + ms + ".msh";
-//                QFile::remove(fileName);
-//                fileName = p->path + QDir::separator() + "mesh" + ms + ".xml";
-//                QFile::remove(fileName);
-//                fileName = p->path + QDir::separator() + "mesh" + ms + "_physical_region.xml";
-//                QFile::remove(fileName);
-//                fileName = p->path + QDir::separator() + "mesh" + ms + "_physical_region.xml.pvd";
-//                QFile::remove(fileName);
-//                fileName = p->path + QDir::separator() + "mesh" + ms + "_physical_region.xml000000.vtu";
-//                QFile::remove(fileName);
-//            }
-//        }
-//    }
-
-//    for (int i = 0; i < 5; i++) {
-//        p->meshList[i] = 0;
-//    }
-//    p->save();
-//}
 
 Group *FormGeo::current() {
     int row = ui->groupsTable->currentRow();

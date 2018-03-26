@@ -36,8 +36,6 @@ public:
     virtual QWidget* tools() = 0;
     virtual void setProject(Project* project) = 0;
 
-    void meshList(QListWidget *listWidget, Project *p);
-
 signals:
     void showMessage(QString message);
     void showProgess(int progress);
